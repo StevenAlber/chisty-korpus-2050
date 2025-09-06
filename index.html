@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="ru" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Стратегический брифинг: «Чистый Корпус 2050»</title>
+    
+    <!-- Meta and OpenGraph Tags -->
+    <meta name="description" content="Стратегический брифинг по управлению биообрастанием флота и портовой инфраструктуры Российской Федерации до 2050 года.">
+    <meta property="og:title" content="Стратегический брифинг: «Чистый Корпус 2050»">
+    <meta property="og:description" content="Интерактивный отчет по научно-технологической дорожной карте.">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="https://placehold.co/1200x630/0B3765/FFFFFF?text=Чистый+Корпус+2050">
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%230B3765'%3E%3C/rect%3E%3C/svg%3E" type="image/svg+xml">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --ministerial-blue: #0B3765;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc; /* slate-50 */
+            color: #0f172a; /* slate-900 */
+        }
+        section {
+            scroll-margin-top: 84px;
+        }
+        .section-header {
+            color: var(--ministerial-blue);
+        }
+        .sticky-nav {
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .fade-in-section {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+        .fade-in-section.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .map-hotspot {
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+        }
+        .map-hotspot circle { transition: all 0.2s; }
+        .map-hotspot:hover .hotspot-circle, .map-hotspot:focus .hotspot-circle { r: 12; fill: #ef4444; }
+        .map-hotspot:hover .hotspot-pulse, .map-hotspot:focus .hotspot-pulse { display: block; }
+        .map-hotspot:focus { outline: none; }
+        .hotspot-pulse {
+            animation: pulse 2s infinite;
+            stroke-width: 2;
+            display: none;
+            transform-origin: center;
+        }
+        @keyframes pulse {
+            0% { transform: scale(0.95); opacity: 0.7; }
+            70% { transform: scale(1.8); opacity: 0; }
+            100% { transform: scale(0.95); opacity: 0; }
+        }
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background-color: rgba(0, 0, 0, 0.6);
+            display: none; align-items: center; justify-content: center;
+            z-index: 50; transition: opacity 0.3s; opacity: 0;
+        }
+        .modal-overlay.visible { display: flex; opacity: 1; }
+        .modal-content {
+            background: white; padding: 2rem; border-radius: 0.75rem;
+            width: 90%; max-width: 600px;
+            transform: scale(0.95); transition: transform 0.3s;
+        }
+        .modal-overlay.visible .modal-content { transform: scale(1); }
+        .hero-bg {
+            background: linear-gradient(135deg, #0f172a 0%, var(--ministerial-blue) 100%);
+        }
+        .ministerial-card {
+            background-color: white;
+            border-radius: 0.5rem;
+            box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.05), 0 1px 2px -1px rgb(0 0 0 / 0.05);
+        }
+        .nav-drawer {
+            transition: transform 0.3s ease-in-out;
+        }
+        .nav-drawer.open {
+            transform: translateX(0);
+        }
+        .nav-drawer.closed {
+            transform: translateX(100%);
+        }
+
+        /* Print styles */
+        @media print {
+            body {
+                font-family: 'Inter', sans-serif;
+                background-color: #fff;
+                color: #000;
+            }
+            header, footer, .map-hotspot text, .print-hidden {
+                display: none !important;
+            }
+            main, section {
+                margin: 0 !important;
+                padding: 1cm 0 !important;
+                scroll-margin-top: 0;
+            }
+            .hero-bg {
+                background: none;
+            }
+            #hero {
+                height: auto;
+                min-height: 0;
+                padding: 2cm 0;
+                text-align: left;
+                color: #000;
+            }
+            #hero * {
+                color: #000 !important;
+            }
+            h1, h2, h3 {
+                page-break-after: avoid;
+            }
+            .ministerial-card, .kpi-table, .decision-matrix {
+                box-shadow: none;
+                border: 1px solid #ccc;
+            }
+            a {
+                text-decoration: none;
+                color: #000;
+            }
+            svg {
+                max-width: 80% !important;
+                margin: 0 auto;
+            }
+        }
+    </style>
+</head>
+<body class="w-full">
+
+    <!-- Sticky Navigation -->
+    <header class="sticky top-0 z-40 bg-white/80 sticky-nav">
+        <nav class="container mx-auto px-4 lg:px-6 py-3">
+            <div class="flex justify-between items-center">
+                <div class="text-lg font-bold text-slate-800">Чистый Корпус 2050</div>
+                <!-- Desktop Nav -->
+                <div class="hidden md:flex space-x-6 text-sm font-semibold">
+                    <a href="#problem" class="text-slate-600 hover:text-blue-800 transition">Проблема</a>
+                    <a href="#map" class="text-slate-600 hover:text-blue-800 transition">Карта рисков</a>
+                    <a href="#strategy" class="text-slate-600 hover:text-blue-800 transition">Стратегия</a>
+                    <a href="#roadmap" class="text-slate-600 hover:text-blue-800 transition">План</a>
+                    <a href="#recommendations" class="text-slate-600 hover:text-blue-800 transition">Рекомендации</a>
+                </div>
+                <!-- Mobile Nav Button -->
+                <div class="md:hidden">
+                    <button id="menu-btn" aria-label="Открыть меню" class="p-2 -mr-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" /></svg>
+                    </button>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Mobile Nav Drawer -->
+    <div id="mobile-menu" class="fixed top-0 right-0 h-full w-64 bg-white shadow-lg z-50 nav-drawer closed md:hidden">
+        <div class="p-4 flex justify-end">
+            <button id="close-menu-btn" aria-label="Закрыть меню" class="p-2">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+            </button>
+        </div>
+        <nav class="flex flex-col p-4 space-y-4">
+            <a href="#problem" class="text-slate-600 hover:text-blue-800 transition block">Проблема</a>
+            <a href="#map" class="text-slate-600 hover:text-blue-800 transition block">Карта рисков</a>
+            <a href="#strategy" class="text-slate-600 hover:text-blue-800 transition block">Стратегия</a>
+            <a href="#roadmap" class="text-slate-600 hover:text-blue-800 transition block">План</a>
+            <a href="#recommendations" class="text-slate-600 hover:text-blue-800 transition block">Рекомендации</a>
+        </nav>
+    </div>
+
+    <main class="container mx-auto px-4 lg:px-6">
+
+        <!-- Section 1: Hero / Title Page -->
+        <section id="hero" class="h-screen min-h-[700px] flex items-center justify-center text-center -mt-16">
+            <div class="relative w-full h-full flex items-center justify-center">
+                <div class="absolute inset-0 hero-bg"></div>
+                <div class="absolute inset-0 bg-black/30"></div>
+                <div class="relative p-8 rounded-lg max-w-5xl fade-in-section is-visible">
+                    <div class="text-sm font-medium text-slate-300 tracking-wider">
+                        <p>МИНИСТЕРСТВО ТРАНСПОРТА РОССИЙСКОЙ ФЕДЕРАЦИИ</p>
+                        <p>МИНИСТЕРСТВО ПРОМЫШЛЕННОСТИ И ТОРГОВЛИ РОССИЙСКОЙ ФЕДЕРАЦИИ</p>
+                    </div>
+                    <h1 class="text-3xl md:text-5xl font-extrabold text-white leading-tight tracking-tight mt-8">СТРАТЕГИЧЕСКИЙ БРИФИНГ 2050</h1>
+                    <p class="text-lg md:text-2xl text-slate-200 mt-4 max-w-4xl mx-auto">Управление биообрастанием флота и портовой инфраструктуры Российской Федерации</p>
+                    <p class="mt-4 text-slate-400">(Научно-технологическая дорожная карта «Чистый Корпус 2050»)</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 2: The Problem -->
+        <section id="problem" class="py-20 lg:py-28 fade-in-section">
+            <div class="max-w-4xl mx-auto text-center">
+                <h2 class="text-3xl md:text-4xl font-bold section-header">Масштабы проблемы: Геоэкономический и биобезопасностный вызов</h2>
+                <p class="mt-4 text-lg text-slate-600">Биообрастание — это не просто эксплуатационная проблема, а прямой экономический и экологический вызов, снижающий конкурентоспособность и безопасность морских перевозок.</p>
+            </div>
+            <div class="mt-16 grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 max-w-6xl mx-auto">
+                <div class="flex flex-col items-center text-center ministerial-card p-6 border-t-4 border-red-500">
+                    <div class="text-4xl md:text-5xl font-bold text-red-600">+40-80%</div>
+                    <p class="mt-2 font-semibold text-slate-700">Рост сопротивления (ΔDrag)</p>
+                </div>
+                <div class="flex flex-col items-center text-center ministerial-card p-6 border-t-4 border-orange-500">
+                    <div class="text-4xl md:text-5xl font-bold text-orange-600">+20-40%</div>
+                    <p class="mt-2 font-semibold text-slate-700">Перерасход топлива</p>
+                </div>
+                <div class="flex flex-col items-center text-center ministerial-card p-6 border-t-4 border-yellow-500">
+                    <div class="text-4xl md:text-5xl font-bold text-yellow-600">&gt;110 млн т</div>
+                    <p class="mt-2 font-semibold text-slate-700">Ежегодные выбросы CO₂</p>
+                </div>
+                <div class="flex flex-col items-center text-center ministerial-card p-6 border-t-4 border-green-500">
+                    <div class="text-4xl md:text-5xl font-bold text-green-600">≥$23 млрд</div>
+                    <p class="mt-2 font-semibold text-slate-700">Ущерб от инвазивных видов (IAS)</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 2.5: KPI Table -->
+        <section id="kpi" class="py-10 lg:py-16 fade-in-section">
+             <div class="max-w-4xl mx-auto text-center">
+                <h3 class="text-2xl md:text-3xl font-bold section-header">Ключевые показатели эффективности (KPI)</h3>
+                <p class="mt-3 text-md text-slate-600">Стратегические цели программы «Чистый Корпус 2050».</p>
+            </div>
+            <div class="mt-8 max-w-5xl mx-auto ministerial-card overflow-hidden">
+                <table class="w-full text-left kpi-table">
+                    <thead class="bg-slate-100 text-sm font-semibold text-slate-700">
+                        <tr>
+                            <th class="p-4">Показатель</th>
+                            <th class="p-4 text-center">2030</th>
+                            <th class="p-4 text-center">2040</th>
+                            <th class="p-4 text-center">2050</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-200">
+                        <tr class="hover:bg-slate-50">
+                            <td class="p-4 font-medium">Средний ΔDrag флота</td>
+                            <td class="p-4 text-center">&lt;10%</td>
+                            <td class="p-4 text-center">≤5%</td>
+                            <td class="p-4 text-center font-bold text-green-700">&lt;2%</td>
+                        </tr>
+                        <tr class="hover:bg-slate-50">
+                            <td class="p-4 font-medium">Экономия топлива (средняя)</td>
+                            <td class="p-4 text-center">5-8%</td>
+                            <td class="p-4 text-center">10-15%</td>
+                            <td class="p-4 text-center font-bold text-green-700">&gt;15-20%</td>
+                        </tr>
+                        <tr class="hover:bg-slate-50">
+                            <td class="p-4 font-medium">Снижение риска интродукции IAS</td>
+                            <td class="p-4 text-center">50%</td>
+                            <td class="p-4 text-center">80%</td>
+                            <td class="p-4 text-center font-bold text-green-700">95%</td>
+                        </tr>
+                        <tr class="hover:bg-slate-50">
+                            <td class="p-4 font-medium">Доля biocide-free покрытий</td>
+                            <td class="p-4 text-center">30%</td>
+                            <td class="p-4 text-center">60%</td>
+                            <td class="p-4 text-center font-bold text-green-700">≥90%</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Section 3: Interactive Map -->
+        <section id="map" class="py-20 lg:py-28 ministerial-card my-16 fade-in-section">
+            <div class="max-w-4xl mx-auto text-center">
+                <h2 class="text-3xl md:text-4xl font-bold section-header">Четыре фронта — одна проблема</h2>
+                <p class="mt-4 text-lg text-slate-600">Для России проблема усугубляется разнообразием климатических зон. Нажмите на точку, чтобы узнать о рисках для каждого из четырех ключевых регионов.</p>
+            </div>
+            <div class="mt-12 w-full max-w-4xl mx-auto">
+                <svg viewBox="0 0 800 450" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="mapTitle">
+                    <title id="mapTitle">Карта рисков биообрастания в ключевых регионах России</title>
+                    <path d="M10 440 L50 350 L150 300 L250 250 L350 200 L450 150 L600 100 L790 50 L790 440 Z" fill="#eef2ff" stroke="#c7d2fe" stroke-width="2"/>
+                    <g class="map-hotspot" data-region="murmansk" role="button" tabindex="0" aria-controls="mapModal" aria-haspopup="dialog">
+                        <circle class="hotspot-pulse" cx="200" cy="150" r="8" fill="none" stroke="#dc2626"/>
+                        <circle class="hotspot-circle" cx="200" cy="150" r="8" fill="#dc2626"/>
+                        <text x="215" y="155" font-size="14" fill="#1e293b" font-weight="bold" class="print-hidden pointer-events-none">Мурманск</text>
+                    </g>
+                     <g class="map-hotspot" data-region="spb" role="button" tabindex="0" aria-controls="mapModal" aria-haspopup="dialog">
+                        <circle class="hotspot-pulse" cx="180" cy="280" r="8" fill="none" stroke="#dc2626"/>
+                        <circle class="hotspot-circle" cx="180" cy="280" r="8" fill="#dc2626"/>
+                        <text x="195" y="285" font-size="14" fill="#1e293b" font-weight="bold" class="print-hidden pointer-events-none">Санкт-Петербург</text>
+                    </g>
+                     <g class="map-hotspot" data-region="novorossiysk" role="button" tabindex="0" aria-controls="mapModal" aria-haspopup="dialog">
+                        <circle class="hotspot-pulse" cx="230" cy="380" r="8" fill="none" stroke="#dc2626"/>
+                        <circle class="hotspot-circle" cx="230" cy="380" r="8" fill="#dc2626"/>
+                        <text x="245" y="385" font-size="14" fill="#1e293b" font-weight="bold" class="print-hidden pointer-events-none">Новороссийск</text>
+                    </g>
+                    <g class="map-hotspot" data-region="vladivostok" role="button" tabindex="0" aria-controls="mapModal" aria-haspopup="dialog">
+                        <circle class="hotspot-pulse" cx="700" cy="350" r="8" fill="none" stroke="#dc2626"/>
+                        <circle class="hotspot-circle" cx="700" cy="350" r="8" fill="#dc2626"/>
+                         <text x="610" y="355" font-size="14" fill="#1e293b" font-weight="bold" class="print-hidden pointer-events-none">Владивосток</text>
+                    </g>
+                </svg>
+            </div>
+        </section>
+
+        <!-- Section 4: Strategy -->
+        <section id="strategy" class="py-20 lg:py-28 fade-in-section">
+            <div class="max-w-4xl mx-auto text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold section-header">Стратегический ответ: Гибридная стратегия (B+C)</h2>
+                <p class="mt-4 text-lg text-slate-600">Предлагается переход от реактивных методов к проактивной, интегрированной системе. Данная стратегия сочетает немедленную операционную эффективность с долгосрочной экологической устойчивостью.</p>
+            </div>
+            <div class="flex flex-col md:flex-row items-stretch justify-center gap-6 max-w-6xl mx-auto">
+                <div class="w-full md:w-1/3 ministerial-card p-8">
+                    <h3 class="text-2xl font-bold text-center text-blue-800">Блок B</h3>
+                     <p class="text-center font-semibold text-slate-600">Операционная эффективность</p>
+                    <ul class="mt-4 list-disc list-inside space-y-2 text-slate-700">
+                        <li><span class="font-semibold">Технологии:</span> Покрытия с низкой адгезией (FRC/SLIPS).</li>
+                        <li><span class="font-semibold">Действие:</span> Проактивная роботизированная очистка (grooming).</li>
+                    </ul>
+                </div>
+                <div class="w-full md:w-1/3 ministerial-card p-8">
+                    <h3 class="text-2xl font-bold text-center text-blue-800">Блок C</h3>
+                    <p class="text-center font-semibold text-slate-600">Долгосрочная устойчивость</p>
+                    <ul class="mt-4 list-disc list-inside space-y-2 text-slate-700">
+                        <li><span class="font-semibold">Технологии:</span> Цифровые двойники, eDNA-мониторинг.</li>
+                        <li><span class="font-semibold">Действие:</span> Очистка в воде с улавливанием (IWCC-capture) и переработка биомассы.</li>
+                    </ul>
+                </div>
+                <div class="w-full md:w-1/3 bg-green-50 border-2 border-green-600 p-8 rounded-lg">
+                    <h3 class="text-2xl font-bold text-center text-green-800">Hybrid (B+C)</h3>
+                    <p class="text-center font-semibold text-green-700">Оптимальный выбор</p>
+                     <div class="mt-4 text-center">
+                        <p class="text-slate-700">Итоговый балл в матрице решений:</p>
+                        <p class="text-6xl font-extrabold text-green-700 mt-2">8.35<span class="text-2xl">/10</span></p>
+                        <p class="text-xs text-slate-500 mt-2">(Оценка по KPI-эффективности, ТСО, экоустойчивости, адаптивности и потенциалу биоэкономики)</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 5: Roadmap -->
+        <section id="roadmap" class="py-20 lg:py-28 bg-slate-100/70 rounded-2xl my-16 fade-in-section">
+             <div class="max-w-4xl mx-auto text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold section-header">Дорожная карта нормотворчества</h2>
+                <p class="mt-4 text-lg text-slate-600">Успех технологических изменений требует параллельного развития нормативно-правовой базы.</p>
+            </div>
+            <div class="max-w-3xl mx-auto relative">
+                <div class="absolute left-4 top-0 w-1 h-full bg-slate-300 print-hidden"></div>
+                <div class="space-y-12">
+                    <div class="relative pl-12">
+                        <div class="absolute left-0 top-1 w-8 h-8 bg-blue-700 rounded-full border-4 border-slate-100/70 flex items-center justify-center text-white font-bold print-hidden">1</div>
+                        <p class="text-sm text-slate-500 font-semibold">Этап I (до 2027 г.)</p>
+                        <h3 class="text-xl font-semibold text-blue-900">Создание базы</h3>
+                        <p class="text-slate-600 mt-2">Введение обязательных планов управления биообрастанием (BFMP/BFRB) для всех судов.</p>
+                    </div>
+                    <div class="relative pl-12">
+                        <div class="absolute left-0 top-1 w-8 h-8 bg-blue-700 rounded-full border-4 border-slate-100/70 flex items-center justify-center text-white font-bold print-hidden">2</div>
+                        <p class="text-sm text-slate-500 font-semibold">Этап II (до 2030 г.)</p>
+                        <h3 class="text-xl font-semibold text-blue-900">Стандартизация</h3>
+                        <p class="text-slate-600 mt-2">Утверждение национального стандарта на IWCC-capture и введение «зеленых тарифов» в портах.</p>
+                    </div>
+                    <div class="relative pl-12">
+                        <div class="absolute left-0 top-1 w-8 h-8 bg-blue-700 rounded-full border-4 border-slate-100/70 flex items-center justify-center text-white font-bold print-hidden">3</div>
+                        <p class="text-sm text-slate-500 font-semibold">Этап III (2031–2040 гг.)</p>
+                        <h3 class="text-xl font-semibold text-blue-900">Интеграция</h3>
+                        <p class="text-slate-600 mt-2">Формирование «зелёных коридоров» на Северном морском пути (СМП) и стимулирование переработки биомассы.</p>
+                    </div>
+                    <div class="relative pl-12">
+                        <div class="absolute left-0 top-1 w-8 h-8 bg-blue-700 rounded-full border-4 border-slate-100/70 flex items-center justify-center text-white font-bold print-hidden">4</div>
+                        <p class="text-sm text-slate-500 font-semibold">Этап IV (2041–2050 гг.)</p>
+                        <h3 class="text-xl font-semibold text-blue-900">Полная цифровизация</h3>
+                        <p class="text-slate-600 mt-2">Обязательное использование данных eDNA и Digital Twin для отчетности и допуска в порты.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 6: Recommendations -->
+        <section id="recommendations" class="py-20 lg:py-28 fade-in-section">
+            <div class="max-w-4xl mx-auto">
+                <h2 class="text-3xl md:text-4xl font-bold section-header text-center">Рекомендации и следующие шаги</h2>
+                 <p class="mt-4 text-lg text-slate-600 text-center">Для успешной реализации стратегии предлагаются следующие первоочередные меры:</p>
+                <ul class="mt-12 space-y-4 text-lg text-slate-700">
+                     <li class="flex items-start p-6 ministerial-card transition-shadow hover:shadow-md">
+                         <span class="text-green-500 mr-4 mt-1 text-2xl font-bold">&#10003;</span>
+                         <div><strong>Утвердить</strong> гибридную стратегию (B+C) как основу национальной политики до 2050 года.</div>
+                     </li>
+                     <li class="flex items-start p-6 ministerial-card transition-shadow hover:shadow-md">
+                         <span class="text-green-500 mr-4 mt-1 text-2xl font-bold">&#10003;</span>
+                         <div><strong>Обеспечить</strong> финансирование пилотных проектов на 2026-2030 гг. для валидации технологий и ROI.</div>
+                     </li>
+                     <li class="flex items-start p-6 ministerial-card transition-shadow hover:shadow-md">
+                         <span class="text-green-500 mr-4 mt-1 text-2xl font-bold">&#10003;</span>
+                         <div><strong>Инициировать</strong> разработку нормативной базы, включая обязательные BFMP к 2027 г. и стандарт IWCC к 2030 г.</div>
+                     </li>
+                      <li class="flex items-start p-6 ministerial-card transition-shadow hover:shadow-md">
+                         <span class="text-green-500 mr-4 mt-1 text-2xl font-bold">&#10003;</span>
+                         <div><strong>Создать</strong> межведомственную рабочую группу для координации проекта и стимулирования биоэкономического кластера.</div>
+                     </li>
+                 </ul>
+            </div>
+        </section>
+
+    </main>
+    
+    <!-- Footer -->
+    <footer class="bg-slate-800 text-slate-300 py-12">
+        <div class="container mx-auto px-6 text-center">
+            <h3 class="text-2xl font-bold text-white">Контактная информация</h3>
+            <div class="mt-4 text-slate-400">
+                <p class="font-bold text-lg text-white">СТИВЕН АЛЬБЕР</p>
+                <p>Основатель и стратегический архитектор</p>
+                <p>KRYONIS Sovereign Systems Limited</p>
+                <a href="mailto:hq@kryonis.global" class="text-sky-400 hover:text-sky-300 transition">E-mail: hq@kryonis.global</a>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- Modal for Map -->
+    <div id="mapModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+        <div class="modal-content relative" id="modal-content">
+            <button id="closeModal" class="absolute -top-3 -right-3 bg-white rounded-full h-10 w-10 text-2xl flex items-center justify-center shadow-lg hover:bg-slate-200 transition focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500" aria-label="Закрыть модальное окно">&times;</button>
+            <h3 id="modalTitle" class="text-2xl font-bold section-header mb-4"></h3>
+            <ul id="modalList" class="list-disc list-inside space-y-2 text-slate-700"></ul>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Fade-in on scroll
+            const sections = document.querySelectorAll('.fade-in-section');
+            const observer = new IntersectionObserver(entries => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('is-visible');
+                    }
+                });
+            }, { threshold: 0.1 });
+            sections.forEach(section => observer.observe(section));
+
+            // Mobile menu logic
+            const menuBtn = document.getElementById('menu-btn');
+            const closeMenuBtn = document.getElementById('close-menu-btn');
+            const mobileMenu = document.getElementById('mobile-menu');
+            const mobileMenuLinks = mobileMenu.querySelectorAll('a');
+            
+            function openMenu() { mobileMenu.classList.replace('closed', 'open'); }
+            function closeMenu() { mobileMenu.classList.replace('open', 'closed'); }
+
+            menuBtn.addEventListener('click', openMenu);
+            closeMenuBtn.addEventListener('click', closeMenu);
+            mobileMenuLinks.forEach(link => link.addEventListener('click', closeMenu));
+            
+            // Interactive Map & Modal Logic
+            const modalData = {
+                murmansk: { title: "Мурманск (Арктика)", risks: ["Ледовая абразия покрытий; MIC-риски под повреждениями.", "Угроза трансарктических инвазий (IAS) через Северный морской путь."] },
+                spb: { title: "Санкт-Петербург (Балтика)", risks: ["Инвазии в малосолёной воде (дрейссены).", "Засорение внутренних систем забортной воды (ISS).", "Высокая токсикологическая нагрузка на экосистему."] },
+                novorossiysk: { title: "Новороссийск (Чёрное море)", risks: ["Длительный сезон и высокая скорость обрастания.", "Быстрый рост гидродинамического сопротивления.", "Риск инвазий из Средиземноморья."] },
+                vladivostok: { title: "Владивосток (Дальний Восток)", risks: ["Высокая интенсивность и IAS-импорт из АТР.", "Максимальное биоразнообразие обрастания."] }
+            };
+            const mapModal = document.getElementById('mapModal');
+            const modalContent = document.getElementById('modal-content');
+            const modalTitle = document.getElementById('modalTitle');
+            const modalList = document.getElementById('modalList');
+            const closeModalBtn = document.getElementById('closeModal');
+            let lastFocusedElement;
+
+            function openModal(region) {
+                const data = modalData[region];
+                if (data) {
+                    lastFocusedElement = document.activeElement;
+                    modalTitle.textContent = data.title;
+                    modalList.innerHTML = data.risks.map(risk => `<li>${risk}</li>`).join('');
+                    mapModal.classList.add('visible');
+                    closeModalBtn.focus();
+                }
+            }
+
+            function closeModal() {
+                 mapModal.classList.remove('visible');
+                 if(lastFocusedElement) lastFocusedElement.focus();
+            }
+            
+            document.querySelectorAll('.map-hotspot').forEach(spot => {
+                spot.addEventListener('click', (e) => openModal(e.currentTarget.dataset.region));
+                spot.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        openModal(e.currentTarget.dataset.region);
+                    }
+                });
+            });
+
+            closeModalBtn.addEventListener('click', closeModal);
+            mapModal.addEventListener('click', (e) => {
+                if(e.target === mapModal) closeModal();
+            });
+
+            // Focus trap for modal
+            mapModal.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') closeModal();
+                if (e.key === 'Tab') {
+                    const focusableElements = modalContent.querySelectorAll('button');
+                    const firstElement = focusableElements[0];
+                    const lastElement = focusableElements[focusableElements.length - 1];
+                    
+                    if (e.shiftKey) { // Shift + Tab
+                        if (document.activeElement === firstElement) {
+                            lastElement.focus();
+                            e.preventDefault();
+                        }
+                    } else { // Tab
+                        if (document.activeElement === lastElement) {
+                            firstElement.focus();
+                            e.preventDefault();
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
